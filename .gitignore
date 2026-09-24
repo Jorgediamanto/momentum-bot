@@ -1,0 +1,40 @@
+# --- Secretos: esto es lo primero de la lista por algo ------------------------
+# Regla inviolable del proyecto: ni .env ni claves en git. Ver CLAUDE.md.
+.env
+.env.*
+*.pem
+*.key
+*.p12
+secrets.*
+credentials.*
+token.json
+
+# --- Entorno de Python --------------------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Datos locales ------------------------------------------------------------
+# La caché de precios se regenera; el estado del paper trading es local.
+data/cache/
+data/*.sqlite
+data/*.sqlite-journal
+data/*.sqlite-wal
+
+# --- Salidas generadas --------------------------------------------------------
+reports/*
+!reports/.gitkeep
+dashboard/dist/
+
+# --- Sistema ------------------------------------------------------------------
+.DS_Store
+Thumbs.db

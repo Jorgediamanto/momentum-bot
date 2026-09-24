@@ -1,0 +1,119 @@
+# config.yaml — TODOS los parámetros de la estrategia
+#
+# Este fichero sólo lo cambia Jorge. El agente no lo toca nunca, y muy en
+# especial no lo toca para que un backtest salga mejor (ver CLAUDE.md).
+#
+# Los importes de dinero van entre comillas, como texto, a propósito: así se
+# cargan como Decimal exacto en vez de como float. De eso depende que las
+# cuentas cuadren al céntimo.
+
+# --- Mercados -----------------------------------------------------------------
+# Los tres candidatos entre los que el bot elige uno cada día.
+# `index` es el símbolo del índice que se usa para medir la tendencia del
+# mercado; los símbolos concretos se confirman en M1, cuando se elija fuente.
+markets:
+  sp500:
+    label: "S&P 500"
+    index: "^GSPC"
+    currency: USD
+  europa:
+    label: "STOXX Europe 600"
+    index: "^STOXX"
+    currency: EUR
+  espana:
+    label: "IBEX 35"
+    index: "^IBEX"
+    currency: EUR
+
+# Moneda en la que se lleva la contabilidad. El inversor reside en España.
+base_currency: EUR
+
+# --- Señal de momentum de empresa ---------------------------------------------
+# Cada ventana es "rentabilidad de los últimos `months` meses, saltándose los
+# `skip_months` más recientes". El salto del mes final es intencionado: el
+# último mes tiende a revertir y ensucia la señal.
+# La puntuación final es la media ponderada de las ventanas; los pesos suman 1.
+momentum:
+  windows:
+    - months: 12
+      skip_months: 1
+      weight: 0.5
+    - months: 6
+      skip_months: 1
+      weight: 0.5
+  # Días de cotización mínimos para que una empresa pueda ser puntuada.
+  # Sin histórico suficiente NO compite (no compite con un cero).
+  min_history_days: 260
+
+# --- Señal de tendencia de mercado --------------------------------------------
+# Decide qué mercados son elegibles y cuál gana.
+trend:
+  sma_days: 200              # media móvil de referencia
+  require_above_sma: true    # un mercado por debajo de su media no es elegible
+  lookback_months: 12        # ventana para comparar mercados entre sí
+  skip_months: 1
+
+# --- Selección ----------------------------------------------------------------
+selection:
+  top_n: 30          # cuántas empresas se compran; debe caer entre min_n y max_n
+  min_n: 20
+  max_n: 100
+  # Si ningún mercado supera el filtro de tendencia, quedarse en liquidez.
+  allow_cash: true
+
+# --- Construcción de cartera --------------------------------------------------
+portfolio:
+  max_weight_per_stock: 0.10   # tope por empresa; ninguna domina la cartera
+  min_weight_per_stock: 0.005  # por debajo de esto no se abre posición
+  fractional_shares: false     # se compran acciones enteras
+  rebalance: monthly           # monthly | weekly | daily
+
+# --- Aportaciones -------------------------------------------------------------
+contributions:
+  amount: "300.00"
+  currency: EUR
+  day_of_month: 1    # si cae en día no hábil, se aplica el siguiente hábil
+
+# --- Costes -------------------------------------------------------------------
+# Aproximación de bróker europeo de bajo coste. Se afinan cuando haya bróker.
+costs:
+  commission_per_order: "1.00"
+  commission_pct: "0.0000"
+  slippage_bps: 5      # puntos básicos sobre el precio de ejecución
+  fx_spread_bps: 25    # coste de cambiar euros a la divisa del mercado
+
+# --- Backtest -----------------------------------------------------------------
+backtest:
+  start: 2010-01-01
+  end: 2025-12-31
+  initial_cash: "0.00"   # se empieza de cero; todo entra por aportaciones
+
+# --- Fiscalidad (España) ------------------------------------------------------
+# Se usa en M6. NO es asesoramiento fiscal: son las reglas como las entiende el
+# autor, para estimar el impacto de los impuestos en el backtest.
+# Jorge debe confirmar los tramos vigentes antes de dar M6 por bueno.
+taxes:
+  country: ES
+  method: FIFO
+  # "Regla de los dos meses": una pérdida no se puede computar si se recompra el
+  # mismo valor (u homogéneo) dentro de esta ventana, en días naturales.
+  wash_sale_days: 60
+  # Base del ahorro: tramos marginales sobre la ganancia patrimonial.
+  savings_brackets:
+    - up_to: "6000.00"
+      rate: 0.19
+    - up_to: "50000.00"
+      rate: 0.21
+    - up_to: "200000.00"
+      rate: 0.23
+    - up_to: "300000.00"
+      rate: 0.27
+    - up_to: null          # resto
+      rate: 0.30
+
+# --- Ejecución ----------------------------------------------------------------
+# "paper" es el único valor admitido. No hay brókers reales en este repositorio
+# y no los va a haber (ver SPEC.md, "Qué NO hace").
+execution:
+  broker: paper
+  database: "data/paper.sqlite"

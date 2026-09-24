@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "momentum-bot"
+version = "0.1.0"
+description = "Bot de momentum que elige cada día entre S&P 500, Europa y España. Sólo opera en papel."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+# Sólo lo que el hito actual justifica. Añadir una dependencia es una decisión,
+# no un reflejo: ver CLAUDE.md.
+dependencies = ["PyYAML>=6.0"]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+  "mypy>=1.11",
+  "types-PyYAML>=6.0",
+]
+
+[project.scripts]
+momentum = "momentum.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E",    # errores de estilo
+  "F",    # pyflakes
+  "W",    # avisos
+  "I",    # orden de imports
+  "UP",   # sintaxis anticuada
+  "B",    # bugs probables
+  "SIM",  # simplificaciones
+  "RUF",  # reglas propias de ruff
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+mypy_path = "src"
+warn_unreachable = false
+pretty = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+  "smoke: prueba de humo de extremo a extremo sobre fixtures",
+]

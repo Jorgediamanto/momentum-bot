@@ -1,0 +1,5 @@
+# El repositorio se escribe desde Windows y se verifica en Linux. Normalizar
+# los finales de línea evita diffs fantasma y que los scripts fallen en CI.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.csv text eol=lf
