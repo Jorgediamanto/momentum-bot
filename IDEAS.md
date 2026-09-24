@@ -10,7 +10,7 @@ fichero no se reordena ni se reescribe.
 
 ---
 
-- [ ] **M0 Esqueleto.**
+- [x] **M0 Esqueleto.**
       Hecho cuando: `make verify` y CI en GitHub Actions en verde.
 
 - [ ] **M1 Datos** de precios diarios ajustados de los tres mercados y sus

@@ -35,6 +35,14 @@ Formato: **fecha · hito · qué se hizo · qué queda pendiente**.
   precios planos el patrimonio final es **exactamente** lo aportado
   (900,00 € al céntimo), y que dos ejecuciones iguales dan el mismo resultado.
 
+**Evidencia de que M0 está hecho.**
+
+- `make verify` en verde en local (Windows, vía `make.ps1`) y en CI.
+- CI en GitHub Actions, `make verify` sobre Python 3.12 y 3.13: en verde en
+  el commit `f76aae6` (ejecución 35972845391).
+- Casilla de M0 marcada en `IDEAS.md` sólo después de comprobar las dos
+  cosas, no antes.
+
 **Decisiones que conviene recordar.**
 
 - Identificadores en inglés, documentación y mensajes en castellano.
